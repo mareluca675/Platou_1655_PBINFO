@@ -1,0 +1,100 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+
+ifstream fin("platou.in");
+ofstream fout("platou.out");
+
+struct m{
+    long long m1 = 0;
+    long long m2 = 0;
+};
+
+short cerinta;
+int n;
+long long vec[1000001];
+bitset<1000001> e;
+vector<long long> plat;
+m f[1000001];
+
+void intrare(){
+    fin >> cerinta >> n;
+
+    for(int i = 1; i <= n; ++ i){
+        fin >> vec[i];
+    }
+}
+
+int main()
+{
+    ios_base::sync_with_stdio(false);
+    fin.tie(NULL);
+    fout.tie(NULL);
+    intrare();
+
+    if(cerinta == 1){
+        long long lungimeCurenta, lungimeMaxima = 1, numarMaxim = 0;
+        for(int i = 1; i <= n; ++ i){
+            lungimeCurenta = 1;
+
+            while(vec[i] == vec[i + 1] and i < n){
+                ++ lungimeCurenta;
+                ++ i;
+            }
+
+            if(lungimeCurenta > lungimeMaxima){
+                lungimeMaxima = lungimeCurenta;
+                numarMaxim = vec[i];
+            }
+            else if(lungimeCurenta == lungimeMaxima){
+                if(numarMaxim  < vec[i]){
+                    numarMaxim = vec[i];
+                }
+            }
+        }
+
+        fout << lungimeMaxima << ' ' << numarMaxim;
+        return 0;
+    }
+    else{
+        ///voi lua fiecare secventa de elemente, si voi retine la fiecare numar cele mai lungi 2 secvente
+
+        long long lungimeMaxima = 0, numarMaxim = 0, lungimeCurenta;
+        for(int i = 1; i <= n; ++ i){
+            lungimeCurenta = 1;
+
+            if(!e[vec[i]]){
+                plat.push_back(vec[i]);
+                e[vec[i]] = 1;
+            }
+
+            while(vec[i] == vec[i + 1] and i < n){
+                ++ lungimeCurenta;
+                ++ i;
+            }
+
+            if(f[vec[i]].m1 <= lungimeCurenta){
+                f[vec[i]].m2 = f[vec[i]].m1;
+                f[vec[i]].m1 = lungimeCurenta;
+            }
+            else if(f[vec[i]].m2 < lungimeCurenta){
+                f[vec[i]].m2 = lungimeCurenta;
+            }
+        }
+
+        for(auto& i : plat){
+            if(f[i].m1 + f[i].m2 > lungimeMaxima){
+                lungimeMaxima = f[i].m1 + f[i].m2;
+                numarMaxim = i;
+            }
+            else if(f[i].m1 + f[i].m2 == lungimeMaxima){
+                if(i > numarMaxim){
+                    numarMaxim = i;
+                }
+            }
+        }
+
+        fout << lungimeMaxima << ' ' << numarMaxim;
+        return 0;
+    }
+}
